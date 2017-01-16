@@ -28,7 +28,7 @@ public class Sonar : MonoBehaviour {
             float min = float.MaxValue;
             foreach (RaycastHit hit in hits)
             {
-                if (hit.distance < min)
+                if (hit.collider.tag != "Finish" && hit.distance < min)
                     min = hit.distance;
             }
             myHit = min;

@@ -19,6 +19,9 @@ public class colider : MonoBehaviour {
         if (collision.gameObject.tag == "block")
         {
             mouse.controller.restartMouse();
+        }else if (collision.gameObject.tag == "Finish")
+        {
+            mouse.controller.nextLap();
         }
 
     }

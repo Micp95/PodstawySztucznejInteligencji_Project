@@ -13,6 +13,11 @@ public class MouseController : MonoBehaviour {
     public float lernValue = 0.5f;
     public int learnIteration = 100;
     public float error = 0.5f;
+    public TextMesh label;
+    public TextMesh labelLern;
+
+    private int lapIteration;
+    private int lernIteration;
 
     AdalineMPLNetworkController network;
 
@@ -40,6 +45,17 @@ public class MouseController : MonoBehaviour {
 
 
         lernPro(learnIteration,error);
+        lapIteration = 0;
+
+        lernIteration += learnIteration;
+        labelLern.text = "Lern iterations: " + lernIteration;
+        nextLap();
+    }
+
+    public void nextLap()
+    {
+        label.text = "Lap: " + lapIteration;
+        lapIteration++;
     }
 	
 	// Update is called once per frame
@@ -114,6 +130,15 @@ public class MouseController : MonoBehaviour {
         input = new double[] { 0, 0, 0, 0, 0 };
         output = new double[] { 1, 0, 0 };
         res.Add(new TestData(input, output));
+
+
+        //input = new double[] { 1, 0, 0, 1, 1 };
+        //output = new double[] {1, 0, 0 };
+        //res.Add(new TestData(input, output));
+
+        //input = new double[] { 1, 1, 0, 0, 1 };
+        //output = new double[] { 1, 0, 0 };
+        //res.Add(new TestData(input, output));
 
 
         //Left
