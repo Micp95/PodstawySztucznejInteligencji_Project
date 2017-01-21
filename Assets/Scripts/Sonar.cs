@@ -21,8 +21,8 @@ public class Sonar : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        RaycastHit[] hits;
-        hits = Physics.RaycastAll(transform.position, transform.forward, myDistance);
+        //pobranie trafien wizaki sensora i znalezienie najblizszego trafienia
+        RaycastHit[] hits = Physics.RaycastAll(transform.position, transform.forward, myDistance);
         if (hits.Length != 0)
         {
             float min = float.MaxValue;

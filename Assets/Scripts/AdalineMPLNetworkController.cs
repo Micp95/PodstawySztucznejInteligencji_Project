@@ -4,11 +4,14 @@
 namespace ArtificialIntelligence.NeuralNetwork
 {
 
+    //klasa do zarzadzania siecia
     class AdalineMPLNetworkController
     {
+        //dwu-wymiarowa siatka neuronow
         private List<List<AdalineMPL>> neurons = new List<List<AdalineMPL>>();
 
-        public AdalineMPLNetworkController(int[] layers,double lernValue)
+        //konstruktor tworzy siec na podstawie parametrow
+        public AdalineMPLNetworkController(int[] layers,double learnValue)
         {
             List<AdalineMPL> prevLayer = null;
             neurons.Clear();
@@ -17,45 +20,51 @@ namespace ArtificialIntelligence.NeuralNetwork
             {
                 List<AdalineMPL> actLayer = new List<AdalineMPL>();
                 for (int p = 0; p < k; p++)
-                    actLayer.Add(new AdalineMPL(lernValue,prevLayer));
+                    actLayer.Add(new AdalineMPL(learnValue,prevLayer));
                 neurons.Add(actLayer);
                 prevLayer = actLayer;
             }
         }
 
 
-
-        public void lern(double[] input, double[] res)
+        //nauka sieci - podanie wektora wejsciowego i wektora z oczekiwanym wyjsciem
+        public void learn(double[] input, double[] res)
         {
-            setInput(input);
-            ask(input);
+            setInput(input);    //ustawienie wejscia
+            ask(input);         //wyliczenie odpowiedzi sieci
 
+            //wyliczenie bledu dla ostatniej warstwy (i ustawienie wag)
             int p = 0;
             foreach (AdalineMPL ad in neurons[neurons.Count-1])
             {
-                ad.LernInitialization(res[p++]);
+                ad.LearnInitialization(res[p++]);
             }
 
-
+            //oblczenie bledu i ustawienie wag polaczen dla reszty sieci
             for (int k = neurons.Count - 2; k >0; k--)
             {
-
                 foreach (AdalineMPL ad in neurons[k])
                 {
-                    ad.Lern();
+                    ad.Learn();
                 }
             }
         }
+
+        //odpytanie sieci
         public double[] ask(double[] input)
         {
-            setInput(input);
-            for( int k = 1; k < neurons.Count; k++)
+            setInput(input);    //ustawienie wejscia
+
+            //odpytanie kolejnych neuronow
+            for ( int k = 1; k < neurons.Count; k++)
             {
                 foreach (AdalineMPL ad in neurons[k])
                 {
                     ad.Ask();
                 }
             }
+
+            //zebranie wynikow do jednej tablicy
             double[] res = new double[neurons[neurons.Count - 1].Count];
             int p = 0;
             foreach (AdalineMPL ad in neurons[neurons.Count -1])
@@ -64,42 +73,8 @@ namespace ArtificialIntelligence.NeuralNetwork
             }
             return res;
         }
-        private double getMaxErr(double[] output, double[] res)
-        {
-            double actMax = 0, tmp;
-            for(int k =0; k < res.Length; k++)
-            {
-                tmp = res[k] - output[k];
-                if (tmp < 0)
-                    tmp = -tmp;
 
-                if (actMax < tmp)
-                    actMax = tmp;
-            }
-            return actMax;
-        }
-
-        public double lernArr(double[] input, double[] res,double error)
-        {
-            double iterations = 0;
-            double actErr;
-            do
-            {
-                lern(input, res);
-                actErr = getMaxErr(ask(input),res);
-
-                if (actErr < 0)
-                    actErr = -actErr;
-
-                iterations++;
-                if (iterations >= 10e4)
-                    break;
-            } while (actErr > error);
-
-            return iterations;
-        }
-
-
+        //ustawienie wejscia do sieci (pierwszej warstwy neuronow)
         private void setInput(double[] input)
         {
             int k = 0;

@@ -14,6 +14,7 @@ public class colider : MonoBehaviour {
 	
 	}
 
+    //funkcje wykrywajaca kolizje dla myszy - rozroznia checkpoint i sciane
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "block")

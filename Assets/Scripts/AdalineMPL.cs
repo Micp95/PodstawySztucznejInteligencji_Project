@@ -5,7 +5,9 @@ namespace ArtificialIntelligence.NeuralNetwork
 {
     class AdalineMPL
     {
+        //wejscie sieci
         List<AdalineMPL> inputs = new List<AdalineMPL>();
+        //wagi polaczen 
         List<double> weights = new List<double>();
         private double b;
 
@@ -13,58 +15,62 @@ namespace ArtificialIntelligence.NeuralNetwork
         public double output { get; set; }
         public double deltaError { get; set; }
 
-        private double lernValue { get; set; }
+        private double learnValue { get; set; }
 
-        public AdalineMPL(double lernValue, List<AdalineMPL> inputs)
+        private double alpha = 0.6;
+
+        public AdalineMPL(double learnValue, List<AdalineMPL> inputs)
         {
             this.inputs = inputs;
-            this.lernValue = lernValue;
+            this.learnValue = learnValue;
             if( inputs != null)
                 InitializeWeights();
         }
 
+        //odpytanie neuronu - ustawienie wyjscia
         public void Ask()
         {
             deltaError = 0;
             double s = b;
-          //  double s = 0;
             for (int k = 0; k < inputs.Count; k++)
                 s += weights[k] * inputs[k].output;
-
-
             output = function(s);
         }
-        public void Lern()
+
+        //obliczenie bledy i przekazanie bledu do poprzednich warstw
+        public void Learn()
         {
             //send error to prev layer
             for (int k = 0; k < inputs.Count; k++)
             {
                 inputs[k].deltaError += deltaError * weights[k];
             }
-
             errorFunction();
         }
 
-        public void LernInitialization(double z)
+        //obliczenie bledu dla ostatniej warstwy
+        public void LearnInitialization(double z)
         {
             deltaError = z - output;
-            Lern();
+            Learn();
         }
 
-
+        //funkcja uczenia - ustawienie wag
         void errorFunction()
         {
-     //       double delta = z - output;
             for (int k = 0; k < inputs.Count; k++)
-                weights[k] = weights[k] + (lernValue* deltaError * dFunction (output)* inputs[k].output);
-            b = b + lernValue * dFunction(output) * deltaError;
+                weights[k] = weights[k] + (learnValue* deltaError * dFunction (output)* inputs[k].output);
+            b = b + learnValue * dFunction(output) * deltaError;
         }
 
-        double alpha = 0.6;
+
+        //funkcja aktywacji
         double function(double x)
         {
             return 1.0 / (1.0+Math.Exp((-alpha)*x));
         }
+
+        //pochodna funkcji aktywacji
         double dFunction(double y)
         {
             return y * (1.0 - y);
@@ -79,11 +85,6 @@ namespace ArtificialIntelligence.NeuralNetwork
                 weights.Add(rand.NextDouble());
 
             b = rand.NextDouble();
-        }
-
-        public double getError()
-        {
-            return deltaError;
         }
     }
 }
